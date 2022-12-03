@@ -2,6 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
+import instance from "../../api/axios";
 import {
   validarDescripcion,
   validarIngredientes,
@@ -15,38 +16,34 @@ const Crear = ({ getApi, getApiCarrusel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let title = e.target.title.value;
-    let imagen = e.target.enlace.value;
+    let name = e.target.title.value;
+    let img = e.target.enlace.value;
     let ingredientes = e.target.ingredientes.value;
     let descripcion = e.target.descripcion.value;
+    let file = e.target.file.value
 
     if (
-      !validarNombreReceta(title) ||
-      !validarUrl(imagen) ||
+      !validarNombreReceta(name) ||
+      !validarUrl(img) ||
       !validarIngredientes(ingredientes) ||
       !validarDescripcion(descripcion)
     ) { 
       return alert('Campos incompletos o incorrectos')
     }
 
-    let ingredientesArray = ingredientes.split("-");
+    let ingredients = ingredientes.split("-");
 
     let nuevaReceta = {
       //id: recetas.length,
-      title,
-      imagen,
-      ingredientesArray,
+      name,
+      img,
+      ingredients,
       descripcion,
+      file
     };
-
+  
     try {
-      const res = await fetch("http://localhost:3001/recetas", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(nuevaReceta),
-      });
+      await instance.post(`/recetas`,nuevaReceta);;
       getApi();
       getApiCarrusel();
       navigate("/receta-tabla");

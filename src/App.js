@@ -8,6 +8,7 @@ import Editar from './components/pages/Editar';
 import Home from './components/pages/Home';
 import Receta from './components/pages/Receta';
 import TablaRecetas from './components/pages/TablaRecetas';
+import instance from './api/axios';
 
 function App() {
   const [recetas, setRecetas] = useState([]);
@@ -15,11 +16,9 @@ function App() {
 
   const getApiCarrusel = async() => {
     try{
-      const res = await fetch("http://localhost:3001/recetas")
-      const result = await res.json()
+      const res = await instance.get("/recetas")
       const imgCarrosel = []
-      imgCarrosel.push(result[result.length - 1], result[result.length - 2], result[result.length - 3])
-      
+      imgCarrosel.push(res.data[res.data.length - 1], res.data[res.data.length - 2], res.data[res.data.length - 3])
       setImagenCarrusel(imgCarrosel)
     } catch (error){
       console.log(error)
@@ -28,9 +27,8 @@ function App() {
 
   const getApi = async() => {
     try{
-      const res = await fetch("http://localhost:3001/recetas");
-      const result = await res.json()
-      setRecetas(result.reverse())
+      const res = await instance.get("/recetas");
+      setRecetas(res.data.reverse())
     } catch (error) {
       console.log(error)
     }

@@ -2,17 +2,13 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
+import instance from '../../api/axios';
 
 const TablaRecetas = ({recetas, getApi, getApiCarrusel}) => {
-
+console.log(recetas)
   const eliminarReceta = async(id) => {
       try{
-        const res = await fetch(`http://localhost:3001/recetas/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        await instance.delete(`/recetas/${id}`);
         getApi();
         getApiCarrusel()
       } catch (error) {
@@ -39,13 +35,13 @@ const TablaRecetas = ({recetas, getApi, getApiCarrusel}) => {
         {
           recetas.map((receta,index) => (
             <tr key={index}>
-            <td>{receta.title}</td>
-            <td className='text-center'>{receta.ingredientesArray.length}</td>
+            <td>{receta.name}</td>
+            <td className='text-center'>{receta.ingredients.length}</td>
             <td className='receta-descripcion-tabla text-center d-flex align-items-center container'>{receta.descripcion}</td>
             <td> 
               <div className='d-flex flex-column justify-content-center align-items-center'>
-              <Button className='m-1' variant='warning' href={`/receta-editar/${receta.id}`}>Editar</Button>
-              <Button className='m-1' onClick={() => eliminarReceta(receta.id)} variant='danger'>Borrar</Button>
+              <Button className='m-1' variant='warning' href={`/receta-editar/${receta._id}`}>Editar</Button>
+              <Button className='m-1' onClick={() => eliminarReceta(receta._id)} variant='danger'>Borrar</Button>
               </div>
             </td>
           </tr>

@@ -11,11 +11,11 @@ const Home = ({ recetas, imagenCarrusel }) => {
           <Carousel.Item key={index} interval={3000}>
             <img
               className="d-block w-100 imagenes"
-              src={`${imagen.imagen}`}
-              alt={`${imagen.title}`}
+              src={`${imagen.img}`}
+              alt={`${imagen.name}`}
             />
             <Carousel.Caption>
-              <h3 className="nombre">{`${imagen.title}`}</h3>
+              <h3 className="nombre">{`${imagen.name}`}</h3>
             </Carousel.Caption>
           </Carousel.Item>
         ))}
@@ -26,13 +26,13 @@ const Home = ({ recetas, imagenCarrusel }) => {
         {recetas.map((receta, index) => (
           <Col key={index} md={4} className="my-2 d-flex justify-content-center">
             <Card style={{ width: "18rem" }}>
-              <Card.Img variant="top" className="imagen-card img-fluid" src={`${receta.imagen}`} />
+              <Card.Img variant="top" className="imagen-card img-fluid" src={`${receta.img}`} />
               <Card.Body>
-                <Card.Title>{`${receta.title}`}</Card.Title>
+                <Card.Title>{`${receta.name}`}</Card.Title>
                 <Card.Text className="card-descripcion border rounded">
                  {`${receta.descripcion}`}
                 </Card.Text>
-                <Button variant="primary" href={`/receta/${receta.id}`}>Ver Receta</Button>
+                <Button variant="primary" href={`/receta/${receta._id}`}>Ver Receta</Button>
               </Card.Body>
             </Card>
           </Col>
