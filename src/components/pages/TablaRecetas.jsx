@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import instance from '../../api/axios';
 
 const TablaRecetas = ({recetas, getApi, getApiCarrusel}) => {
-console.log(recetas)
+
   const eliminarReceta = async(id) => {
       try{
         await instance.delete(`/recetas/${id}`);
