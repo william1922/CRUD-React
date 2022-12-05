@@ -8,9 +8,13 @@ import {
   validarNombreReceta,
   validarUrl,
 } from "../validaciones/Validaciones";
+import instance from '../../api/axios';
+
+
 
 const Editar = ({getApi}) => {
   const [objeto, setObjeto] = useState({});
+  const [ingredients, setIngredients] = useState([])
 
   const {id} = useParams();
   const navigate = useNavigate();
@@ -18,11 +22,10 @@ const Editar = ({getApi}) => {
   useEffect(() => {
     const getReceta = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/recetas/${id}`);
-      const result = await res.json();
-      const arrayFiltrado = result.ingredientesArray.join('-');
-      result.ingredientesArray = arrayFiltrado
-      setObjeto(result)
+      const res = await instance.get(`/recetas/${id}`);
+      const arrayFiltrado = res.data.ingredients.join('-');
+      setIngredients(arrayFiltrado)
+      setObjeto(res.data)
     } catch (error) {
       console.log(error);
     }
@@ -33,38 +36,32 @@ const Editar = ({getApi}) => {
 
   const handleEdit = async(e) => {
     e.preventDefault()
-    console.log("saludo")
-    let title = e.target.title.value;
-    let imagen = e.target.enlace.value;
+    let name = e.target.title.value;
+    let img = e.target.enlace.value;
     let ingredientes = e.target.ingredientes.value;
     let descripcion = e.target.descripcion.value;
+    let file = e.target.file.value
 
     if (
-      !validarNombreReceta(title) ||
-      !validarUrl(imagen) ||
+      !validarNombreReceta(name) ||
+      !validarUrl(img) ||
       !validarIngredientes(ingredientes) ||
       !validarDescripcion(descripcion)
     ) { 
       return alert('Campos incompletos o incorrectos')
     }
     
-    let ingredientesArray = ingredientes.split("-")
+    let ingredients = ingredientes.split("-")
     
     let nuevaReceta = {
-      title,
-      imagen,
-      ingredientesArray,
+      name,
+      img,
+      ingredients,
       descripcion
     }
-
+  
     try {
-      const res = await fetch(`http://localhost:3001/recetas/${id}`,{
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(nuevaReceta)
-      });
+      await instance.put(`/recetas/${id}`, nuevaReceta);
       getApi();
       navigate("/receta-tabla")
     } catch (error) {
@@ -79,15 +76,19 @@ const Editar = ({getApi}) => {
       <Form className='container' onSubmit={handleEdit}>
       <Form.Group className="mb-3">
         <Form.Label>Receta</Form.Label>
-        <Form.Control type="text" name='title' defaultValue={objeto.title} placeholder="Nombre de receta" />
+        <Form.Control type="text" name='title' defaultValue={objeto.name} placeholder="Nombre de receta" />
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>URL imagen</Form.Label>
-        <Form.Control type="text" name='enlace' defaultValue={objeto.imagen} placeholder="http//" />
+        <Form.Control type="text" name='enlace' defaultValue={objeto.img} placeholder="http//" />
       </Form.Group>
+      <Form.Group className="mb-3 d-flex flex-column">
+          <Form.Label>Subir Imagen</Form.Label>
+        <input type="file" name="file"></input>
+        </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Ingredientes (separe los ingredientes con un guion en medio "-")</Form.Label>
-        <Form.Control as="textarea" name="ingredientes" placeholder='1 pisca de sal - 1 cucharadita' defaultValue={objeto.ingredientesArray} rows={3} />
+        <Form.Control as="textarea" name="ingredientes" placeholder='1 pisca de sal - 1 cucharadita' defaultValue={ingredients} rows={3} />
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Descripcion</Form.Label>
